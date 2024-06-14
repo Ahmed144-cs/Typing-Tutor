@@ -1,0 +1,13 @@
+C:\Users\3D\source\repos\TypingTutor\bin\Release\TypingTutor.exe.config
+C:\Users\3D\source\repos\TypingTutor\bin\Release\TypingTutor.exe
+C:\Users\3D\source\repos\TypingTutor\bin\Release\TypingTutor.pdb
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.csproj.AssemblyReference.cache
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.ChooseTheDifficultyForm.resources
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.FormTypingTutor.resources
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.Properties.Resources.resources
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.csproj.GenerateResource.cache
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.csproj.CoreCompileInputs.cache
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.exe
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.pdb
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.AddSentence.resources
+C:\Users\3D\source\repos\TypingTutor\obj\Release\TypingTutor.SentenceManagement.resources
