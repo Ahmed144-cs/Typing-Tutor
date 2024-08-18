@@ -35,6 +35,7 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.practiceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dGVSentence)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -70,9 +71,10 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteToolStripMenuItem,
             this.updateToolStripMenuItem,
-            this.addToolStripMenuItem});
+            this.addToolStripMenuItem,
+            this.practiceToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(128, 76);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 128);
             // 
             // deleteToolStripMenuItem
             // 
@@ -94,6 +96,13 @@
             this.addToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.addToolStripMenuItem.Text = "Add";
             this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
+            // 
+            // practiceToolStripMenuItem
+            // 
+            this.practiceToolStripMenuItem.Name = "practiceToolStripMenuItem";
+            this.practiceToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.practiceToolStripMenuItem.Text = "Practice ";
+            this.practiceToolStripMenuItem.Click += new System.EventHandler(this.practiceToolStripMenuItem_Click);
             // 
             // SentenceManagement
             // 
@@ -121,5 +130,6 @@
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem updateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem practiceToolStripMenuItem;
     }
 }

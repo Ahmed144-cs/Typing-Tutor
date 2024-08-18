@@ -20,69 +20,63 @@ namespace TypingTutor
             InitializeComponent();
         }
 
-        private void quatToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }     
+        private List<string> _dataLines = new List<string>();
+        private int _currentLineIndex = 0;
+        private int _currentCharIndex = 0;
 
+        private int _mistakeCount = 0;
 
-        private List<string> DataLines = new List<string>();
-        private int DataLineCount = 0;
+        private bool _isReadyToDeleteMistakes = false;
 
-        bool readyForDeleteMistakes = false;
-        int countLetters = 0;
-        int countMistakes = 0;
+        private short _timerCount = 0;
+        private short _maxTimeLimit = 0;
 
-        short timerCount = 0;
-        short maxTimerNumber = 0;
+        private bool _isWaitingForEnter = false;
 
-        bool madeHimPressEnter = false;
+        private static readonly object _lockObject = new object();
 
 
         private void FormTypingTutor_Load(object sender, EventArgs e)
         {
-            if (!File.Exists(ConfigurationManager.AppSettings["FilePath"]))
+            if (!clsGlobal.IsDataFileExist())
             {
                 MessageBox.Show("Program data is missing. Please ensure all required data is available and try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
             }
 
             LoadDataFromFile();
+            DisplayCurrentLine();
+
+            SentenceManagement.PracticeCallBack = PracticeInfoCallBack;
         }
 
-        void LoadDataFromFile()
+        private void LoadDataFromFile()
         {
             try
             {
-                DataLines.AddRange(File.ReadAllLines(ConfigurationManager.AppSettings["FilePath"]));
+                _dataLines.Clear();
+                _dataLines.AddRange(File.ReadAllLines(clsGlobal.GetFilePath()));
             }
             catch (FileNotFoundException ex)
             {
-                MessageBox.Show("The program data file is missing. Please ensure the file 'myTypingTutorFile.txt' is available and try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                ErrorLogger.LogError(ex.Message);
+                clsGlobal.LogAndShowError(ex, "The program data file is missing. Please ensure the file 'myTypingTutorFile.txt' is available and try again.");
                 this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"An error occurred while loading the data.","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                ErrorLogger.LogError(ex.Message);
+                clsGlobal.LogAndShowError(ex, "An error occurred while loading the data.");
                 this.Close();
             }
         }
 
+        private void DisplayCurrentLine()
+        {        
+            textBoxShow.Text = _dataLines[_currentLineIndex];
+            textBoxWrite.MaxLength = _dataLines[_currentLineIndex].Length;
+        }
+
         private void buttonStart_Click(object sender, EventArgs e)
-        {         
-            if (DataLineCount == 0)
-            {
-                textBoxShow.Text = DataLines[DataLineCount];
-                textBoxWrite.Focus();
-            }
-
-            if (DataLineCount < DataLines.Count)
-            {
-                textBoxWrite.MaxLength = DataLines[DataLineCount].Length;
-            }
-
+        {
             buttonStart.Enabled = false;
             buttonStart.BackColor = Color.Empty;
 
@@ -92,28 +86,29 @@ namespace TypingTutor
             SetTimerAndFormatLabel();
             timer.Enabled = true;
 
-            madeHimPressEnter = false;
+            _isWaitingForEnter = false;
         }
 
-        void SetTimerAndFormatLabel()
+        private void SetTimerAndFormatLabel()
         {
             if (ClsDifficultyLevel.SelectedLevel == "Easy")
             {
-                labelMaxTime.Text = ":40";
-                maxTimerNumber = 40;
+                SetTimer(40);
             }
-
-            if (ClsDifficultyLevel.SelectedLevel == "Middle")
+            else if (ClsDifficultyLevel.SelectedLevel == "Middle")
             {
-                labelMaxTime.Text = ":20";
-                maxTimerNumber = 20;
+                SetTimer(20);
             }
-
-            if (ClsDifficultyLevel.SelectedLevel == "Hard")
+            else
             {
-                labelMaxTime.Text = ":10";
-                maxTimerNumber = 10;
+                SetTimer(10);
             }
+        }
+
+        private void SetTimer(short maxTime)
+        {
+            _maxTimeLimit = maxTime;
+            labelMaxTime.Text = $":{maxTime}";
         }
 
         private void textBoxWrite_Click(object sender, EventArgs e)
@@ -124,88 +119,68 @@ namespace TypingTutor
 
         private void textBoxWrite_KeyDown(object sender, KeyEventArgs e)
         {
-            if (madeHimPressEnter)
+            if (_isWaitingForEnter)
             {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    GetNextText();
-                    return;
-                }
-                else
-                {
-                    e.SuppressKeyPress = true;
-                    return;
-                }
+                HandleEnterKey(e);
+                return;
             }
 
-            if (readyForDeleteMistakes)
+            if (_isReadyToDeleteMistakes)
             {
-                if (e.KeyCode == Keys.Back)
-                {
-                    if (countLetters > 0)
-                        countLetters--;
-                    readyForDeleteMistakes = false;
-                    return;
-                }
-                else
-                {
-                    e.SuppressKeyPress = true;
-                    return;
-                }
+                HandleBackspaceKey(e);
+                return;
             }
 
-            if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete || e.KeyCode == Keys.Left
-                || e.KeyCode == Keys.Up)
+            if (clsGlobal.IsInvalidKey(e))
             {
-                e.SuppressKeyPress = true;
                 return;
             }
 
             if (e.KeyCode == Keys.Enter)
             {
-                GetNextText();
+                MoveToNextText();
                 return;
             }
 
-            InvalidKey.BackColor = Color.Empty;
+            if (e.KeyCode == Keys.ShiftKey)
+            {
+                Task.Run(() => HighlightKey(e.KeyCode.ToString(), Color.Cyan));
+            }
         }
 
-        private void textBoxWrite_TextChanged(object sender, EventArgs e)
+        private void HandleEnterKey(KeyEventArgs e)
         {
-            IsReadyForDeleteMistakes();
-
-            if((textBoxWrite.Text.Length == textBoxShow.Text.Length) && (!readyForDeleteMistakes))
+            if (e.KeyCode == Keys.Enter)
             {
-                FinalResult();
-                PassOrField();
-            }
-        }      
-
-        void IsReadyForDeleteMistakes()
-        {
-            if (textBoxWrite.Text == "")
-            {
-                return;
-            }
-
-            if (textBoxShow.Text[countLetters] != textBoxWrite.Text[countLetters])
-            {
-                textBoxResult.Text += textBoxWrite.Text[countLetters] + " ";
-                readyForDeleteMistakes = true;
-                countMistakes++;
-                InvalidKey.BackColor = Color.Red;
+                MoveToNextText();
             }
             else
             {
-                countLetters++;
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void HandleBackspaceKey(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Back)
+            {
+                if(_currentCharIndex > 0)
+                {
+                    _currentCharIndex--;
+                }
+                _isReadyToDeleteMistakes = false;
+            }
+            else
+            {
+                e.SuppressKeyPress = true;
             }
         }     
 
-        void GetNextText()
+        private void MoveToNextText()
         {
-            DataLineCount++;
+            _currentLineIndex++;
 
-            if (DataLineCount < DataLines.Count)
+            if (_currentLineIndex < _dataLines.Count)
             {
                 ResetForm();
             }
@@ -215,21 +190,20 @@ namespace TypingTutor
                     "Warning there are no more sentences to show",
                     MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
                 {
-                    DataLineCount = 0;
+                    _currentLineIndex = 0;
                     ResetForm();
                 }
                 else
                 {
-                    DataLineCount--;
-                    buttonReset_Click(null, null);  
+                    _currentLineIndex--;
+                    ResetForm();
                 }
             }
         }
 
-        void ResetForm()
+        private void ResetForm()
         {
-            textBoxShow.Text = DataLines[DataLineCount];
-            textBoxWrite.MaxLength = DataLines[DataLineCount].Length;
+            DisplayCurrentLine();
 
             textBoxWrite.ReadOnly = true;
             textBoxWrite.Clear();
@@ -238,87 +212,178 @@ namespace TypingTutor
             buttonStart.BackColor = Color.SeaShell;
             buttonStart.Focus();
 
-            textBoxResult.Clear();
+            richTxtResult.Clear();
             timer.Enabled = false;
 
-            readyForDeleteMistakes = false;
-            countLetters = 0;
-            countMistakes = 0;
+            _isReadyToDeleteMistakes = false;
+            _currentCharIndex = 0;
+            _mistakeCount = 0;
 
-            timerCount = 0;
-            maxTimerNumber = 0;
+            _timerCount = 0;
+            _maxTimeLimit = 0;
             label1.Text = "0";
 
-            madeHimPressEnter = false;
+            _isWaitingForEnter = false;
 
-            InvalidKey.BackColor = Color.Empty;
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            if(timerCount == maxTimerNumber)
-            {
-                timer.Enabled = false;
-                madeHimPressEnter = true;
-                FinalResult();
-                PassOrField();
-                return;
-            }
-
-            timerCount++;
-            label1.Text = timerCount.ToString();
-        }
-
-        void FinalResult()
-        {
-            textBoxResult.Text += Environment.NewLine + countMistakes.ToString() + " Mistakes";
-            madeHimPressEnter = true;
-            timer.Enabled = false;
-        }
-
-        void PassOrField()
-        {
-            if (maxTimerNumber == 40)
-            {
-                int num = textBoxShow.Text.Length / 2;
-
-                if (num > countMistakes && textBoxShow.Text.Length  == textBoxWrite.Text.Length)
-                {
-                    MessageBox.Show("You Pass", "Pass");
-                }
-                else
-                    MessageBox.Show("You Failed", "Failed");
-            }
-
-            else if (maxTimerNumber == 20)
-            {
-                int num = textBoxShow.Text.Length / 4;
-
-                if (num > countMistakes && textBoxShow.Text.Length == textBoxWrite.Text.Length)
-                {
-                    MessageBox.Show("You Pass", "Pass");
-                }
-                else
-                    MessageBox.Show("You Failed", "Failed");
-            }
-
-            else 
-            {
-                int num = textBoxShow.Text.Length / 6;
-
-                if (num > countMistakes && textBoxShow.Text.Length == textBoxWrite.Text.Length)
-                {
-                    MessageBox.Show("You Pass", "Pass");
-                }
-                else
-                    MessageBox.Show("You Failed", "Failed");
-            }      
+            Task.Run(ResetLabelColor);
         }
 
         private void buttonReset_Click(object sender, EventArgs e)
         {
             ResetForm();
-            madeHimPressEnter = true;
+        }
+
+        private void textBoxWrite_TextChanged(object sender, EventArgs e)
+        {
+            IsReadyForDeleteMistakes();
+
+            if ((textBoxWrite.Text.Length == textBoxShow.Text.Length) && (!_isReadyToDeleteMistakes))
+            {
+                FinalResult();
+                PassOrField();
+            }
+        }
+
+        private void IsReadyForDeleteMistakes()
+        {
+            if (textBoxWrite.Text == "")
+            {
+                return;
+            }
+
+            string keyName = textBoxWrite.Text[_currentCharIndex].ToString().ToUpper();
+
+            if (textBoxShow.Text[_currentCharIndex] != textBoxWrite.Text[_currentCharIndex])
+            {
+                Task.Run(() => HighlightKey(keyName, Color.Red));
+
+                Task.Run(() => FormatResultText(_currentCharIndex));
+
+                _isReadyToDeleteMistakes = true;
+                _mistakeCount++;
+            }
+            else
+            {
+                Task.Run(() => HighlightKey(keyName, Color.Cyan));
+
+                _currentCharIndex++;
+            }
+        }     
+
+        private void HighlightKey(string KeyName, Color lettersColor)
+        {
+            lock (_lockObject)
+            {
+                ResetLabelColor();
+
+                var controls = panelReset.Controls;
+                for (int i = 0; i < controls.Count; i++)
+                {
+                    var label = controls[i] as Label;
+                    if (label != null && label.Tag != null && string.Equals(label.Tag.ToString(), KeyName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        label.BackColor = lettersColor;
+                        return;
+                    }
+                }
+
+                InvalidKey.BackColor = Color.Red;
+            }
+        }
+
+        private void ResetLabelColor()
+        {
+            lock (_lockObject)
+            {
+                var controls = panelReset.Controls;
+                for (int i = 0; i < controls.Count; i++)
+                {
+                    var label = controls[i] as Label;
+                    if (label != null && label.Tag != null && (label.BackColor == Color.Cyan || label.BackColor == Color.Red))
+                    {
+                        label.BackColor = Color.Empty;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void FormatResultText(int charIndex)
+        {
+            if (richTxtResult.InvokeRequired)
+            {
+                // If the method is called from a non-UI thread, invoke it on the UI thread.
+                richTxtResult.Invoke(new Action(() => FormatResultText(charIndex)));
+            }
+            else
+            {
+                // Code to execute on the UI thread.
+                clsGlobal.AppendTextWithColor(richTxtResult, textBoxWrite.Text[charIndex].ToString(), Color.Red);
+                clsGlobal.AppendTextWithColor(richTxtResult, $" => {textBoxShow.Text[charIndex]}{Environment.NewLine}", Color.Blue);
+            }
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            if (_timerCount == _maxTimeLimit)
+            {
+                timer.Enabled = false;
+                _isWaitingForEnter = true;
+                FinalResult();
+                PassOrField();
+                return;
+            }
+
+            _timerCount++;
+            label1.Text = _timerCount.ToString();
+        }
+
+        private void FinalResult()
+        {
+            clsGlobal.AppendTextWithColor(richTxtResult, Environment.NewLine + _mistakeCount.ToString() + " Mistakes", Color.Black);
+            _isWaitingForEnter = true;
+            timer.Enabled = false;
+        }
+
+        private void PassOrField()
+        {
+            int num;
+
+            if (_maxTimeLimit == 40)
+            {
+                num = textBoxShow.Text.Length / 2;
+
+                if (num > _mistakeCount && textBoxShow.Text.Length == textBoxWrite.Text.Length)
+                {
+                    MessageBox.Show("You Pass", "Pass");
+                }
+                else
+                    MessageBox.Show("You Failed", "Failed");
+            }
+
+            else if (_maxTimeLimit == 20)
+            {
+                num = textBoxShow.Text.Length / 4;
+
+                if (num > _mistakeCount && textBoxShow.Text.Length == textBoxWrite.Text.Length)
+                {
+                    MessageBox.Show("You Pass", "Pass");
+                }
+                else
+                    MessageBox.Show("You Failed", "Failed");
+            }
+
+            else
+            {
+                num = textBoxShow.Text.Length / 6;
+
+                if (num > _mistakeCount && textBoxShow.Text.Length == textBoxWrite.Text.Length)
+                {
+                    MessageBox.Show("You Pass", "Pass");
+                }
+                else
+                    MessageBox.Show("You Failed", "Failed");
+            }
         }
 
         private void difficultyLevelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -345,14 +410,23 @@ namespace TypingTutor
             LoadDataFromFile();
         }
 
-        #region
-        private void labelMaxTime_Click(object sender, EventArgs e) { }
-        private void label1_Click(object sender, EventArgs e) { }
-        private void InvalidKey_Click(object sender, EventArgs e) { }
-        private void textBoxResult_TextChanged(object sender, EventArgs e) { }
-        private void textBoxShow_TextChanged(object sender, EventArgs e) { }
-        private void panelReset_Paint(object sender, PaintEventArgs e) { }
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) { }
-        #endregion  
+        private void quatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void PracticeInfoCallBack(int index)
+        {
+            LoadDataFromFile();
+
+            if(index >= _dataLines.Count)
+            {
+                MessageBox.Show("An error occurred while loading the data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _currentLineIndex = index;
+            ResetForm();
+        }
     }
 }

@@ -15,16 +15,17 @@ namespace TypingTutor
     public partial class AddSentence : Form
     {
         private enum Mode { add = 0, update = 1 }
-        Mode mode;
+        private Mode _mode;
 
-        int sentenceID;
+        private int _sentenceID;
         public static Action<int> CallBack;
 
         public AddSentence()
         {
             InitializeComponent();
+
             this.Text = "Add Sentence";
-            mode = Mode.add;
+            _mode = Mode.add;
         }
 
         public AddSentence(string sentence, int sentenceID)
@@ -33,8 +34,8 @@ namespace TypingTutor
 
             this.Text = "Update Sentence";
             TbInput.Text = sentence;
-            mode = Mode.update;
-            this.sentenceID = sentenceID;
+            _mode = Mode.update;
+            this._sentenceID = sentenceID;
         }
 
         private void BtnClose_Click(object sender, EventArgs e)
@@ -44,7 +45,7 @@ namespace TypingTutor
 
         private void AddSentence_Load(object sender, EventArgs e)
         {
-            if (!File.Exists(ConfigurationManager.AppSettings["FilePath"]))
+            if (!clsGlobal.IsDataFileExist())
             {
                 MessageBox.Show("Program data is missing. Please ensure all required data is available and try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Close();
@@ -55,16 +56,16 @@ namespace TypingTutor
         {
             if(!string.IsNullOrWhiteSpace(TbInput.Text.Trim()))
             {
-                using (StreamWriter wf = new StreamWriter(ConfigurationManager.AppSettings["FilePath"], true))
+                using (StreamWriter wf = new StreamWriter(clsGlobal.GetFilePath(), true))
                 {
                     wf.WriteLine(TbInput.Text.Trim());
                 }
 
                 MessageBox.Show("Task finished successfully!", "Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                if (mode == Mode.update)
+                if (_mode == Mode.update)
                 {
-                    CallBack(this.sentenceID);
+                    CallBack(this._sentenceID);
                     this.Close();
                 }
 
