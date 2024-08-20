@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|solutionrelative:main form\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|C:\\Users\\3D\\source\\repos\\TypingTutor\\sentence\\sentencemanagement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|solutionrelative:sentence\\sentencemanagement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|C:\\Users\\3D\\source\\repos\\TypingTutor\\global\\clsglobal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|solutionrelative:global\\clsglobal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|C:\\Users\\3D\\source\\repos\\TypingTutor\\main form\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|solutionrelative:main form\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|C:\\Users\\3D\\source\\repos\\TypingTutor\\sentence\\sentencemanagement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|solutionrelative:sentence\\sentencemanagement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{96F45CA2-3388-435B-A0AB-C5AA6B4104C2}|TypingTutor.csproj|C:\\Users\\3D\\source\\repos\\TypingTutor\\sentence\\sentencemanagement.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
@@ -80,22 +80,33 @@
               "RelativeDocumentMoniker": "Main Form\\Form1.cs",
               "ToolTip": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Main Form\\Form1.cs",
               "RelativeToolTip": "Main Form\\Form1.cs",
-              "ViewState": "AQIAAGcBAAAAAAAAAAAowJkBAAAMAAAA",
+              "ViewState": "AQIAAI8BAAAAAAAAAAAQwJgBAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-18T13:12:04.849Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "SentenceManagement.cs",
               "DocumentMoniker": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Sentence\\SentenceManagement.cs",
               "RelativeDocumentMoniker": "Sentence\\SentenceManagement.cs",
               "ToolTip": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Sentence\\SentenceManagement.cs",
               "RelativeToolTip": "Sentence\\SentenceManagement.cs",
-              "ViewState": "AQIAAHMAAAAAAAAAAAAwwIAAAAAIAAAA",
+              "ViewState": "AQIAAB0AAAAAAAAAAAAjwCkAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-18T13:11:05.45Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SentenceManagement.cs [Design]",
+              "DocumentMoniker": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Sentence\\SentenceManagement.cs",
+              "RelativeDocumentMoniker": "Sentence\\SentenceManagement.cs",
+              "ToolTip": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Sentence\\SentenceManagement.cs [Design]",
+              "RelativeToolTip": "Sentence\\SentenceManagement.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-06-11T14:20:03.502Z"
             },
             {
               "$type": "Document",
@@ -105,13 +116,13 @@
               "RelativeDocumentMoniker": "Sentence\\AddSentence.cs",
               "ToolTip": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Sentence\\AddSentence.cs",
               "RelativeToolTip": "Sentence\\AddSentence.cs",
-              "ViewState": "AQIAACwAAAAAAAAAAAArwC8AAAAMAAAA",
+              "ViewState": "AQIAAC4AAAAAAAAAAAAvwDMAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-18T13:10:54.404Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Main Form\\Form1.cs",
               "RelativeDocumentMoniker": "Main Form\\Form1.cs",
@@ -122,15 +133,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "clsGlobal.cs",
               "DocumentMoniker": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Global\\clsGlobal.cs",
               "RelativeDocumentMoniker": "Global\\clsGlobal.cs",
               "ToolTip": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Global\\clsGlobal.cs",
               "RelativeToolTip": "Global\\clsGlobal.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAqwBYAAAAIAAAA",
+              "ViewState": "AQIAAAoAAAAAAAAAAAAYwBYAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T23:08:16.948Z"
+              "WhenOpened": "2024-08-13T23:08:16.948Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -166,17 +178,6 @@
               "RelativeToolTip": "Sentence\\AddSentence.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-06-11T14:44:27.492Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SentenceManagement.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Sentence\\SentenceManagement.cs",
-              "RelativeDocumentMoniker": "Sentence\\SentenceManagement.cs",
-              "ToolTip": "C:\\Users\\3D\\source\\repos\\TypingTutor\\Sentence\\SentenceManagement.cs [Design]",
-              "RelativeToolTip": "Sentence\\SentenceManagement.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-11T14:20:03.502Z"
             },
             {
               "$type": "Document",

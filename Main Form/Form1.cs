@@ -54,8 +54,7 @@ namespace TypingTutor
         {
             try
             {
-                _dataLines.Clear();
-                _dataLines.AddRange(File.ReadAllLines(clsGlobal.GetFilePath()));
+                _dataLines = File.ReadAllLines(clsGlobal.GetFilePath()).ToList();
             }
             catch (FileNotFoundException ex)
             {
